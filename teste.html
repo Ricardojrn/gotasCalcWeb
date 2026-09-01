@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Dispensação de Gotas por Categoria</title>
+    <style>
+        :root {
+            --bg-page: #e0f2fe;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --text-dark: #0f172a;
+            --green-bg: #d1fae5;
+            --green-border: #10b981;
+            --dark-header: #0f172a;
+            --dark-cell: #334155;
+            --pink-cell: #fce7f3;
+            --orange-text: #f97316;
+            --primary: #0284c7;
+            
+            /* Cores de Categoria */
+            --cat-controlados: #6366f1;
+            --cat-colirios: #0284c7;
+            --cat-pediatria: #ec4899;
+            --cat-geral: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            max-width: 980px;
+            width: 100%;
+        }
+
+        .header-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-title h2 {
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .header-title p {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* PAINEL DE SELEÇÃO */
+        .selection-panel {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .panel-header h3 {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .panel-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-ctrl {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .btn-ctrl:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            background: #ffffff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s;
+        }
+
+        .checkbox-item:hover {
+            background: #f1f5f9;
+        }
+
+        .checkbox-item input {
+            cursor: pointer;
+        }
+
+        /* BADGES DE CATEGORIA */
+        .cat-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 0.03em;
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+
+        .tag-controlados { background-color: #e0e7ff; color: #4338ca; }
+        .tag-colirios { background-color: #e0f2fe; color: #0369a1; }
+        .tag-pediatria { background-color: #fce7f3; color: #be185d; }
+        .tag-geral { background-color: #dcfce7; color: #15803d; }
+
+        /* CABEÇALHOS DE CATEGORIA NA TABELA */
+        .cat-row td {
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            text-align: left;
+            padding: 8px 16px;
+            letter-spacing: 0.05em;
+        }
+
+        .cat-header-controlados { background-color: #e0e7ff; color: #3730a3; border-left: 5px solid var(--cat-controlados); }
+        .cat-header-colirios { background-color: #e0f2fe; color: #075985; border-left: 5px solid var(--cat-colirios); }
+        .cat-header-pediatria { background-color: #fce7f3; color: #9d174d; border-left: 5px solid var(--cat-pediatria); }
+        .cat-header-geral { background-color: #dcfce7; color: #166534; border-left: 5px solid var(--cat-geral); }
+
+        /* TABELA */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .col-medicamento {
+            font-weight: 700;
+            text-align: left;
+            padding-left: 16px;
+            color: var(--text-dark);
+            line-height: 1.25;
+            width: 34%;
+        }
+
+        .col-medicamento span {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .col-medicamento small {
+            display: block;
+            font-size: 0.7rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .col-gotas-head {
+            background-color: #ffffff;
+            border-top: 2px solid var(--green-border);
+            border-left: 2px solid var(--green-border);
+            border-right: 2px solid var(--green-border);
+            color: var(--text-dark);
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+
+        .col-gotas-cell {
+            background-color: var(--green-bg);
+            border-left: 2px solid var(--green-border);
+            border-right: 2px solid var(--green-border);
+            width: 16%;
+        }
+
+        .input-gotas {
+            width: 60px;
+            padding: 5px 6px;
+            border: 1px solid #059669;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #065f46;
+            background-color: #ffffff;
+            outline: none;
+        }
+
+        .header-black {
+            background-color: var(--dark-header);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.75rem;
+            width: 25%;
+        }
+
+        .cell-dark {
+            background-color: var(--dark-cell);
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .header-frasco {
+            background-color: var(--dark-header);
+            color: var(--orange-text);
+            font-weight: 800;
+            font-size: 0.75rem;
+            width: 25%;
+        }
+
+        .cell-pink {
+            background-color: var(--pink-cell);
+            color: #831843;
+            font-weight: 700;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-title">
+            <h2>Calculadora Prática de Dispensação</h2>
+            <p>Selecione e filtre por medicamentos controlados, colírios, pediatria e uso geral.</p>
+        </div>
+
+        <!-- PAINEL DE SELEÇÃO -->
+        <div class="selection-panel">
+            <div class="panel-header">
+                <h3>Selecione os Medicamentos:</h3>
+                <div class="panel-controls">
+                    <button type="button" class="btn-ctrl" onclick="toggleTodos(true)">Marcar Todos</button>
+                    <button type="button" class="btn-ctrl" onclick="toggleTodos(false)">Desmarcar Todos</button>
+                </div>
+            </div>
+            
+            <input type="text" id="searchBox" class="search-box" placeholder="Buscar por princípio ativo, marca ou categoria..." oninput="filtrarOpcoes()">
+
+            <div class="checkbox-grid" id="checkboxGrid">
+                <!-- Gerado via JavaScript -->
+            </div>
+        </div>
+
+        <!-- TABELA DE RESULTADOS -->
+        <div class="table-wrapper">
+            <table id="medTable">
+                <thead>
+                    <tr>
+                        <th>MEDICAMENTO</th>
+                        <th class="col-gotas-head">GOTAS<br>DIA</th>
+                        <th class="header-black">P/ 30 DIAS</th>
+                        <th class="header-frasco">1 Frasco</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <!-- 1. CONTROLADOS / PSICOTRÓPICOS -->
+                    <tr class="cat-row" data-cat="controlados">
+                        <td colspan="4" class="cat-header-controlados">Controlados & Psicotrópicos</td>
+                    </tr>
+
+                    <tr id="med-rivotril" data-cat="controlados" data-vol="20" data-fator="25" data-totalgotas="500">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-controlados">Controlado</span>
+                            Clonazepam 2,5mg/mL
+                            <span>RIVOTRIL</span>
+                            <small>20 mL | 25 gt/mL (500 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="5" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-amplictil" data-cat="controlados" data-vol="20" data-fator="40" data-totalgotas="800">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-controlados">Controlado</span>
+                            Clorpromazina 40mg/mL
+                            <span>AMPLICTIL 4%</span>
+                            <small>20 mL | 40 gt/mL (800 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="20" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-gardenal" data-cat="controlados" data-vol="20" data-fator="40" data-totalgotas="800">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-controlados">Controlado</span>
+                            Fenobarbital 40mg/mL
+                            <span>GARDENAL 4%</span>
+                            <small>20 mL | 40 gt/mL (800 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="40" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-haldol" data-cat="controlados" data-vol="30" data-fator="20" data-totalgotas="600">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-controlados">Controlado</span>
+                            Haloperidol 2mg/mL
+                            <span>HALDOL</span>
+                            <small>30 mL | 20 gt/mL (600 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="20" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-neuleptil1" data-cat="controlados" data-vol="20" data-fator="40" data-totalgotas="800">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-controlados">Controlado</span>
+                            Periciazina 10mg/mL
+                            <span>NEULEPTIL 1%</span>
+                            <small>20 mL | 40 gt/mL (800 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="10" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-lexotan" data-cat="controlados" data-vol="20" data-fator="25" data-totalgotas="500">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-controlados">Controlado</span>
+                            Bromazepam 2,5mg/mL
+                            <span>LEXOTAN</span>
+                            <small>20 mL | 25 gt/mL (500 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="15" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <!-- 2. OFTALMOLOGIA / COLÍRIOS -->
+                    <tr class="cat-row" data-cat="colirios">
+                        <td colspan="4" class="cat-header-colirios">Oftalmologia & Colírios</td>
+                    </tr>
+
+                    <tr id="med-tobrex" data-cat="colirios" data-vol="5" data-fator="33" data-totalgotas="165">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-colirios">Colírio</span>
+                            Tobramicina 3mg/mL
+                            <span>TOBREX</span>
+                            <small>5 mL | 33 gt/mL (165 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="4" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-maxitrol" data-cat="colirios" data-vol="5" data-fator="22" data-totalgotas="110">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-colirios">Colírio</span>
+                            Dexametasona + Neomicina + Polimixina B
+                            <span>MAXITROL</span>
+                            <small>5 mL | 22 gt/mL (110 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="4" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <!-- 3. PEDIATRIA & GASTRO -->
+                    <tr class="cat-row" data-cat="pediatria">
+                        <td colspan="4" class="cat-header-pediatria">Pediatria, Sintomáticos & Antifúngicos</td>
+                    </tr>
+
+                    <tr id="med-nistatina" data-cat="pediatria" data-vol="50" data-fator="24" data-totalgotas="1200">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-pediatria">Antifúngico</span>
+                            Nistatina 100.000 UI/mL
+                            <span>NISTATINA SUSPENSÃO</span>
+                            <small>50 mL | ~24 gt/mL (1.200 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="40" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-simeticona" data-cat="pediatria" data-vol="15" data-fator="30" data-totalgotas="450">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-pediatria">Gastro</span>
+                            Simeticona 75mg/mL
+                            <span>LUFTAL / SIMETICONA GOTAS</span>
+                            <small>15 mL | 30 gt/mL (450 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="15" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-dimeticona" data-cat="pediatria" data-vol="10" data-fator="20" data-totalgotas="200">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-pediatria">Vitamina</span>
+                            Colecalciferol (Vit. D3) 200 UI/gota
+                            <span>ADPAT / VITAMINA D GOTAS</span>
+                            <small>10 mL | 20 gt/mL (200 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="2" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <!-- 4. USO GERAL / ANALGÉSICOS -->
+                    <tr class="cat-row" data-cat="geral">
+                        <td colspan="4" class="cat-header-geral">Analgésicos & Uso Geral</td>
+                    </tr>
+
+                    <tr id="med-dipirona" data-cat="geral" data-vol="20" data-fator="20" data-totalgotas="400">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-geral">Analgésico</span>
+                            Dipirona Monoidratada 500mg/mL
+                            <span>NOVALGINA / GENÉRICO</span>
+                            <small>20 mL | 20 gt/mL (400 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="20" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-paracetamol" data-cat="geral" data-vol="15" data-fator="20" data-totalgotas="300">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-geral">Analgésico</span>
+                            Paracetamol 200mg/mL
+                            <span>TYLENOL GOTAS</span>
+                            <small>15 mL | 20 gt/mL (300 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="15" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                    <tr id="med-metoclopramida" data-cat="geral" data-vol="10" data-fator="20" data-totalgotas="200">
+                        <td class="col-medicamento">
+                            <span class="cat-tag tag-geral">Antiemético</span>
+                            Cloridrato de Metoclopramida 4mg/mL
+                            <span>PLASIL GOTAS</span>
+                            <small>10 mL | 20 gt/mL (200 gotas)</small>
+                        </td>
+                        <td class="col-gotas-cell"><input type="number" class="input-gotas" value="25" min="1" oninput="calcular(this)"></td>
+                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-pink res-duracao">-</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div id="emptyMsg" class="empty-msg hidden">Nenhum medicamento selecionado para exibição.</div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Inicializar Painel de Checkboxes com Badges
+        function initCheckboxes() {
+            const grid = document.getElementById('checkboxGrid');
+            const rows = document.querySelectorAll('#medTable tbody tr:not(.cat-row)');
+            
+            // Padrão selecionado inicial
+            const selecionadosPadrao = ['med-rivotril', 'med-gardenal', 'med-nistatina', 'med-dipirona'];
+
+            rows.forEach(tr => {
+                const id = tr.id;
+                const cat = tr.dataset.cat;
+                const nomeMedicamento = tr.querySelector('.col-medicamento').childNodes[3].textContent.trim();
+                const marca = tr.querySelector('.col-medicamento span:not(.cat-tag)').textContent.trim();
+                const isChecked = selecionadosPadrao.includes(id);
+
+                const item = document.createElement('label');
+                item.className = 'checkbox-item';
+                item.innerHTML = `
+                    <input type="checkbox" data-target="${id}" ${isChecked ? 'checked' : ''} onchange="atualizarVisibilidade()">
+                    <span class="cat-tag tag-${cat}">${cat}</span>
+                    <span><strong>${marca}</strong> (${nomeMedicamento})</span>
+                `;
+                grid.appendChild(item);
+
+                if (!isChecked) {
+                    tr.classList.add('hidden');
+                }
+            });
+
+            atualizarVisibilidade();
+        }
+
+        // 2. Gerenciar Visibilidade de Linhas e Cabeçalhos por Categoria
+        function atualizarVisibilidade() {
+            const checkboxes = document.querySelectorAll('#checkboxGrid input[type="checkbox"]');
+            const contagemCategorias = {
+                controlados: 0,
+                colirios: 0,
+                pediatria: 0,
+                geral: 0
+            };
+
+            checkboxes.forEach(cb => {
+                const tr = document.getElementById(cb.dataset.target);
+                if (cb.checked) {
+                    tr.classList.remove('hidden');
+                    const cat = tr.dataset.cat;
+                    if (contagemCategorias[cat] !== undefined) {
+                        contagemCategorias[cat]++;
+                    }
+                } else {
+                    tr.classList.add('hidden');
+                }
+            });
+
+            // Atualiza cada faixa de categoria
+            let totalVisiveis = 0;
+            for (const [cat, count] of Object.entries(contagemCategorias)) {
+                const catRow = document.querySelector(`.cat-row[data-cat="${cat}"]`);
+                if (catRow) {
+                    if (count > 0) {
+                        catRow.classList.remove('hidden');
+                    } else {
+                        catRow.classList.add('hidden');
+                    }
+                }
+                totalVisiveis += count;
+            }
+
+            // Exibir mensagem se tudo estiver desmarcado
+            const emptyMsg = document.getElementById('emptyMsg');
+            const table = document.getElementById('medTable');
+            if (totalVisiveis === 0) {
+                emptyMsg.classList.remove('hidden');
+                table.classList.add('hidden');
+            } else {
+                emptyMsg.classList.add('hidden');
+                table.classList.remove('hidden');
+            }
+        }
+
+        // 3. Atalhos Marcar/Desmarcar
+        function toggleTodos(status) {
+            document.querySelectorAll('#checkboxGrid input[type="checkbox"]').forEach(cb => {
+                if (cb.closest('.checkbox-item').style.display !== 'none') {
+                    cb.checked = status;
+                }
+            });
+            atualizarVisibilidade();
+        }
+
+        // 4. Busca por nome, marca ou categoria
+        function filtrarOpcoes() {
+            const termo = document.getElementById('searchBox').value.toLowerCase();
+            document.querySelectorAll('#checkboxGrid .checkbox-item').forEach(item => {
+                const texto = item.textContent.toLowerCase();
+                if (texto.includes(termo)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // 5. Cálculo Dinâmico de Frascos e Duração
+        function calcular(inputElement) {
+            const tr = inputElement.closest('tr');
+            const gotasDia = parseFloat(inputElement.value) || 0;
+            
+            const volFrasco = parseFloat(tr.dataset.vol) || 20;
+            const fatorGotejador = parseFloat(tr.dataset.fator) || 20;
+            const totalGotasFrasco = parseFloat(tr.dataset.totalgotas) || (volFrasco * fatorGotejador);
+
+            const res30 = tr.querySelector('.res-30');
+            const resDuracao = tr.querySelector('.res-duracao');
+
+            if (gotasDia <= 0) {
+                res30.innerText = "0,00";
+                resDuracao.innerText = "0 Meses";
+                return;
+            }
+
+            // Frascos para 30 dias: (Gotas por dia * 30) / Total de gotas no frasco
+            const totalGotas30 = gotasDia * 30;
+            const frascos30 = totalGotas30 / totalGotasFrasco;
+
+            // Duração do frasco: Total de gotas / Gotas por dia
+            const diasDuracao = totalGotasFrasco / gotasDia;
+            const mesesDuracao = diasDuracao / 30;
+
+            res30.innerText = frascos30.toFixed(2).replace('.', ',');
+            
+            if (mesesDuracao >= 1) {
+                resDuracao.innerText = mesesDuracao.toFixed(1).replace('.', ',') + " Meses";
+            } else {
+                resDuracao.innerText = Math.round(diasDuracao) + " Dias";
+            }
+        }
+
+        // Inicialização
+        document.addEventListener("DOMContentLoaded", () => {
+            initCheckboxes();
+            document.querySelectorAll('.input-gotas').forEach(input => calcular(input));
+        });
+    </script>
+
+</body>
+</html>

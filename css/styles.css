@@ -1,14 +1,13 @@
 :root {
-            --bg-page: #e0f2fe;
+            --bg-page: #76aee1;
             --card-bg: #ffffff;
             --border-color: #cbd5e1;
             --text-dark: #0f172a;
-            --green-bg: #d1fae5;
             --green-border: #10b981;
-            --dark-header: #0f172a;
-            --dark-cell: #334155;
-            --pink-cell: #fce7f3;
-            --orange-text: #f97316;
+            --dark-header: #1E3A8A;
+            --dark-cell: #cce2f8;
+            --rosa1: #fce7f3;
+            --rosa2: #f9a8d4;
             --primary: #0284c7;
 
             /* Cores de Categoria */
@@ -38,7 +37,6 @@
         .container {
             background-color: var(--card-bg);
             border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             padding: 24px;
             max-width: 980px;
             width: 100%;
@@ -146,14 +144,15 @@
 
         /* TABELA */
         .table-wrapper {
-            overflow-x: auto;
+            overflow-x: hidden;
             border-radius: 12px;
             border: 1px solid var(--border-color);
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             text-align: center;
             font-size: 0.85rem;
         }
@@ -179,8 +178,8 @@
         .cat-header-geral { background-color: #dcfce7; color: #166534; border-left: 5px solid var(--cat-geral); }
 
         .category-header {
-            background-color: #cbd5e1;
-            color: #1e293b;
+            background-color: var(--dark-header);
+            color: #ffffff;
             font-weight: 800;
             text-transform: uppercase;
             font-size: 0.8rem;
@@ -207,29 +206,28 @@
         .col-medicamento small {
             display: block;
             font-size: 0.7rem;
-            color: #0369a1;
+            color: var(--primary);
             font-weight: 600;
         }
 
+        .header-med{
+            background-color: var(--dark-header);
+            border-top-left-radius: 12px;
+            color: #ffffff;
+        }
         .col-gotas-head {
-            background-color: #ffffff;
-            border-top: 2px solid var(--green-border);
-            border-left: 2px solid var(--green-border);
-            border-right: 2px solid var(--green-border);
-            color: var(--text-dark);
-            font-weight: 800;
+            background-color: var(--dark-header);
+            color: #ffffff;
             font-size: 0.75rem;
         }
 
         .col-gotas-cell {
-            background-color: var(--green-bg);
-            border-left: 2px solid var(--green-border);
-            border-right: 2px solid var(--green-border);
             width: 15%;
         }
 
         .input-gotas {
-            width: 60px;
+            width: 70px;
+            height: 40px;
             padding: 5px 6px;
             border: 1px solid #059669;
             border-radius: 6px;
@@ -245,7 +243,7 @@
             background-color: var(--dark-header);
             color: #ffffff;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             width: 17%;
         }
 
@@ -257,15 +255,14 @@
 
         .header-frasco {
             background-color: var(--dark-header);
-            color: var(--orange-text);
+            color: #ffffff;
             font-weight: 800;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             width: 19%;
         }
 
         .cell-pink {
-            background-color: var(--pink-cell);
-            color: #831843;
+            color: var(--primary);
             font-weight: 700;
         }
 

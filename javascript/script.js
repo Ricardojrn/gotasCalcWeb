@@ -1,7 +1,7 @@
 // Inicializar Painel de Checkboxes
         function initCheckboxes() {
             const grid = document.getElementById('checkboxGrid');
-            const rows = document.querySelectorAll('#medTable tbody tr:not(.cat-row)');
+            const rows = document.querySelectorAll('#medTabela tbody tr:not(.cat-row)');
             
             // Iniciar com apenas alguns selecionados por padrão para exibição inicial limpa
             const selecionadosPadrao = ['med-rivotril', 'med-gardenal', 'med-haldol'];
@@ -46,7 +46,7 @@
                 }
             });
 
-            // Gerenciar os cabeçalhos de categoria (quando não houver nenhum medicamento visível, esconde o cabeçalho)
+            // Gerenciar os cabeçalhos de categoria (quando não houver nenhum medicamento marcado, esconde o cabeçalho da categoria)
             const catGotas = document.querySelector('.cat-row[data-cat="gotas"]');
             const catColirios = document.querySelector('.cat-row[data-cat="colirios"]');
             const catGeral = document.querySelector('.cat-row[data-cat="geral"]');
