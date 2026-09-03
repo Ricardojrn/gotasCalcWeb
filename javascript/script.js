@@ -61,42 +61,16 @@
             else catGeral.classList.add('hidden');
 
             // Exibir mensagem se nada estiver selecionado
-            const emptyMsg = document.getElementById('emptyMsg');
+            const vazioMsg = document.getElementById('vazioMsg');
             const table = document.getElementById('medTable');
             if (visiveisGotas === 0 && visiveisColirios === 0 && visiveisGeral === 0) {
-                emptyMsg.classList.remove('hidden');
+                vazioMsg.classList.remove('hidden');
                 table.classList.add('hidden');
             } else {
-                emptyMsg.classList.add('hidden');
+                vazioMsg.classList.add('hidden');
                 table.classList.remove('hidden');
             }
         }
-
-        /*
-        // Funções de atalho: Marcar / Desmarcar todos
-        function toggleTodos(status) {
-            document.querySelectorAll('#checkboxGrid input[type="checkbox"]').forEach(cb => {
-                // Se a caixa estiver visível na busca, aplica o status
-                if (cb.closest('.checkbox-item').style.display !== 'none') {
-                    cb.checked = status;
-                }
-            });
-            atualizarVisibilidade();
-        }
-
-        // Filtro da caixa de busca
-        function filtrarOpcoes() {
-            const termo = document.getElementById('searchBox').value.toLowerCase();
-            document.querySelectorAll('#checkboxGrid .checkbox-item').forEach(item => {
-                const texto = item.textContent.toLowerCase();
-                if (texto.includes(termo)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
-        */
 
         // Função de Cálculo
         function calcular(inputElement) {

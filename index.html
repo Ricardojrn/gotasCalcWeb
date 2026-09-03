@@ -9,7 +9,7 @@
 <body>
 
     <div class="container">
-        <div class="header-title">
+        <div class="header-titulo">
             <h2>Calculadora Prática de Dispensação</h2>
         </div>
 
@@ -20,12 +20,12 @@
                     <tr>
                         <th class="header-med">MEDICAMENTO</th>
                         <th class="col-gotas-head">GOTAS<br>DIA</th>
-                        <th class="header-black">P/ 30 DIAS</th>
+                        <th class="header-escura">P/ 30 DIAS</th>
                         <th class="header-frasco">1 Frasco</th>
                     </tr>
                 </thead>
                 <tbody>
-
+                    
                     <tr class="cat-row" data-cat="gotas">
                         <td colspan="4" class="cat-header-controlados">Controlados</td>
                     </tr>
@@ -33,28 +33,28 @@
                     <tr id="med-rivotril" data-cat="gotas" data-vol="20" data-fator="25" data-totalgotas="500">
                         <td class="col-medicamento">Clonazepam (2,5mg/mL)<span>RIVOTRIL</span> <small>20 mL | 25 gt/mL</small></td>
                         <td class="col-gotas-cell"><input type="number" class="input-gotas" value="0" min="1" oninput="calcular(this)"></td>
-                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-escura res-30">-</td>
                         <td class="cell-pink res-duracao">-</td>
                     </tr>
 
                     <tr id="med-amplictil" data-cat="gotas" data-vol="20" data-fator="40" data-totalgotas="800">
                         <td class="col-medicamento">Clorpromazina (40mg/mL)<span>AMPLICTIL 4%</span> <small>20 mL | 40 gt/mL</small></td>
                         <td class="col-gotas-cell"><input type="number" class="input-gotas" value="0" min="1" oninput="calcular(this)"></td>
-                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-escura res-30">-</td>
                         <td class="cell-pink res-duracao">-</td>
                     </tr>
 
                     <tr id="med-gardenal" data-cat="gotas" data-vol="20" data-fator="40" data-totalgotas="800">
                         <td class="col-medicamento">Fenobarbital (40mg/mL)<span>GARDENAL 4%</span> <small>20 mL | 40 gt/mL</small></td>
                         <td class="col-gotas-cell"><input type="number" class="input-gotas" value="0" min="1" oninput="calcular(this)"></td>
-                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-escura res-30">-</td>
                         <td class="cell-pink res-duracao">-</td>
                     </tr>
 
                     <tr id="med-haldol" data-cat="gotas" data-vol="20" data-fator="20" data-totalgotas="400">
                         <td class="col-medicamento">Haloperidol (2mg/mL)<span>HALDOL</span> <small>20 mL | 20 gt/mL</small></td>
                         <td class="col-gotas-cell"><input type="number" class="input-gotas" value="0" min="1" oninput="calcular(this)"></td>
-                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-escura res-30">-</td>
                         <td class="cell-pink res-duracao">-</td>
                     </tr>
 
@@ -66,7 +66,7 @@
                     <tr id="med-timolol" data-cat="colirios" data-vol="5" data-fator="30" data-totalgotas="150">
                         <td class="col-medicamento">Maleato de Timolol (0,5%) <small>5 mL | 30 gt/mL </small></td>
                         <td class="col-gotas-cell"><input type="number" class="input-gotas" value="0" min="1" oninput="calcular(this)"></td>
-                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-escura res-30">-</td>
                         <td class="cell-pink res-duracao">-</td>
                     </tr>
 
@@ -77,20 +77,20 @@
                     <tr id="med-dipirona" data-cat="geral" data-vol="20" data-fator="20" data-totalgotas="400">
                         <td class="col-medicamento">Dipirona 500mg/mL <small>20 mL | 20 gt/mL</small></td>
                         <td class="col-gotas-cell"><input type="number" class="input-gotas" value="0" min="1" oninput="calcular(this)"></td>
-                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-escura res-30">-</td>
                         <td class="cell-pink res-duracao">-</td>
                     </tr>
 
                     <tr id="med-paracetamol" data-cat="geral" data-vol="15" data-fator="20" data-totalgotas="300">
                         <td class="col-medicamento">Paracetamol 200mg/mL<small>15 mL | 20 gt/mL</small></td>
                         <td class="col-gotas-cell"><input type="number" class="input-gotas" value="0" min="1" oninput="calcular(this)"></td>
-                        <td class="cell-dark res-30">-</td>
+                        <td class="cell-escura res-30">-</td>
                         <td class="cell-pink res-duracao">-</td>
                     </tr>
                     
                 </tbody>
             </table>
-            <div id="emptyMsg" class="empty-msg hidden">Nenhum medicamento selecionado para exibição.</div>
+            <div id="vazioMsg" class="vazio-msg hidden">Nenhum medicamento selecionado para exibição.</div>
         
                         <div class="checkbox-grid" id="checkboxGrid">
                 <!-- Gerado via JavaScript -->
@@ -100,18 +100,15 @@
         
     </div>
     <!-- RODAPÉ -->
-    <footer class="system-footer">
-    <!--<div class="author-info">
-            Desenvolvido por <strong>Ricardo Jr.</strong> &bull; Farmácia
-        </div> -->
-        <p class="legal-note">
+    <footer class="system-rodape">
+        <p class="nota-rodape">
             Ferramenta para suporte à dispensação. Consulte sempre as bulas atualizadas.
         </p>
-        <div class="author-info">
+        <div class="autor-info">
             Desenvolvido por &bull;<strong> Ricardo Jr.</strong>
         </div>
         <div class="version-badge">
-            v1.1.3
+            v1.1.4
         </div>
     </footer>
 
